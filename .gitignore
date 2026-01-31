@@ -1,32 +1,47 @@
-# --- Keil MDK / STM32 垃圾文件 ---
+# --- Robomaster 步兵机器人过滤规则 ---
+
+# 1. 编译输出与中间文件
+MDK-ARM/
+**/Listings/
+**/Objects/
 *.o
-*.obj
-*.hex
-*.bin
-*.elf
-*.axf
-*.crf
 *.d
-*.map
+*.crf
 *.htm
 *.dep
 *.lnp
-*.bak
+*.axf
+*.elf
+*.hex
+*.bin
+*.map
 *.lst
-*.uvguix.*
-*.uvoptx
-RTE/
+*.__i
+*.build_log.htm
+*.scvd
 
-# --- VS Code 垃圾文件 ---
+# 2. 官方标准库/固件库
+# 只要有 .ioc 文件，队友可以随时一键生成这些文件
+Drivers/
+Middlewares/
+
+# 3. VS Code 和系统产生的缓存
 .vscode/
-.vs/
-*.code-workspace
-
-# --- CMake / Linux 编译文件夹 ---
-build/
-Debug/
-Release/
-
-# --- 系统文件 ---
+.history/
 .DS_Store
 Thumbs.db
+
+# 4. Keil 用户的个性化设置
+*.uvguix.*
+*.uvoptx
+
+# 5. 白名单
+!Core/
+!control/
+!periph/
+!RTT/
+!*.ioc
+!MDK-ARM/*.uvprojx
+!.gitignore
+!README.md
+!LICENSE
