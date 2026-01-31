@@ -1,32 +1,25 @@
-# --- Keil MDK / STM32 垃圾文件 ---
+# --- 编译产生的垃圾文件 ---
 *.o
-*.obj
-*.hex
-*.bin
-*.elf
-*.axf
-*.crf
 *.d
-*.map
+*.crf
 *.htm
 *.dep
 *.lnp
-*.bak
+*.axf
+*.elf
+*.hex
+*.bin
+*.build_log.htm
+*.__i
 *.lst
-*.uvguix.*
-*.uvoptx
-RTE/
+*.map
 
-# --- VS Code 垃圾文件 ---
-.vscode/
-.vs/
-*.code-workspace
-
-# --- CMake / Linux 编译文件夹 ---
+# --- 文件夹 ---
+Listings/
+Objects/
 build/
 Debug/
 Release/
 
-# --- 系统文件 ---
-.DS_Store
-Thumbs.db
+# --- VS Code 自动生成的配置 ---
+.vscode/
