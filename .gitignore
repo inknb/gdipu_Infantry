@@ -1,0 +1,32 @@
+# --- Keil MDK / STM32 垃圾文件 ---
+*.o
+*.obj
+*.hex
+*.bin
+*.elf
+*.axf
+*.crf
+*.d
+*.map
+*.htm
+*.dep
+*.lnp
+*.bak
+*.lst
+*.uvguix.*
+*.uvoptx
+RTE/
+
+# --- VS Code 垃圾文件 ---
+.vscode/
+.vs/
+*.code-workspace
+
+# --- CMake / Linux 编译文件夹 ---
+build/
+Debug/
+Release/
+
+# --- 系统文件 ---
+.DS_Store
+Thumbs.db
