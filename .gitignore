@@ -1,4 +1,9 @@
-# --- 编译产生的垃圾文件 ---
+# --- Robomaster 步兵机器人过滤规则 ---
+
+# 1. 编译输出与中间文件
+MDK-ARM/
+**/Listings/
+**/Objects/
 *.o
 *.d
 *.crf
@@ -9,17 +14,34 @@
 *.elf
 *.hex
 *.bin
-*.build_log.htm
-*.__i
-*.lst
 *.map
+*.lst
+*.__i
+*.build_log.htm
+*.scvd
 
-# --- 文件夹 ---
-Listings/
-Objects/
-build/
-Debug/
-Release/
+# 2. 官方标准库/固件库
+# 只要有 .ioc 文件，队友可以随时一键生成这些文件
+Drivers/
+Middlewares/
 
-# --- VS Code 自动生成的配置 ---
+# 3. VS Code 和系统产生的缓存
 .vscode/
+.history/
+.DS_Store
+Thumbs.db
+
+# 4. Keil 用户的个性化设置
+*.uvguix.*
+*.uvoptx
+
+# 5. 白名单
+!Core/
+!control/
+!periph/
+!RTT/
+!*.ioc
+!MDK-ARM/*.uvprojx
+!.gitignore
+!README.md
+!LICENSE
