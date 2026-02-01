@@ -1,4 +1,4 @@
-# RoboMaster 步兵机器人电控源码
+# RoboMaster 步兵机器人
 
 ![Build Status](https://img.shields.io/badge/Build-Keil_MDK-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-STM32F4-blue)
@@ -103,25 +103,7 @@ RoboMaster-Infantry/
 - **调试工具**：J-Link ST-Link
 
 
-### 2. 关键检查清单 (Checklist)
-
-> **特别注意**：由于 Pitch 轴使用了 MIT 模式直驱电机，参数设置错误极易导致云台疯转或打断排线，请务必按顺序检查：
-
-1.  **Pitch 轴参数写入**
-    - 代码中仅发送位置(P)和速度(V)命令。
-    - **必须**使用达妙上位机，将电机的 **Kp (刚度) 设为 15~30**，**Kd (阻尼) 设为 0.5~1.5**，并**保存到电机内部**。否则电机通电后无力。
-    - 确认电机 CAN ID 已修改为 `0x0C` (对应控制帧 `0x10C`)。
-
-2.  **Pitch 轴零点设置**
-    - 将云台手动扶正（水平位置），在达妙上位机中点击 **“Set Zero”**。
-
-3.  **Yaw 轴配置**
-    - 检查 GM6020 电机尾部拨码，**必须拨到 5 的位置** (对应 ID `0x209`)。
-
-4.  **IMU 方向**
-    - 确认 HWT906 模块安装方向与车头一致，否则云台会反向修正导致自旋。
-
-### 3. 操作说明
+### 2. 操作说明
 
 - **S1 开关 (右侧)**
     - 上：键盘鼠标模式 (`KB_CONTROL`)
@@ -133,6 +115,6 @@ RoboMaster-Infantry/
     - 上：安全模式 (停止摩擦轮)
 
 ---
-### 4.关键事项
+### 3.关键事项
        因为硬件原因，HWT906 IMU暂时替换为HWT606 IMU，相关代码也是适配HWT606 IMU。
 ---
