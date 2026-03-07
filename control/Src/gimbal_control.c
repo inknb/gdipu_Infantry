@@ -2,6 +2,7 @@
 #include "referee.h"
 #include <math.h>
 #include "rm_referee.h"
+#include "custom_client.h" // [新增] 引入图传链路自定义客户端数据
 
 Gimbal_t gimbal;
 
@@ -233,23 +234,23 @@ void Update_Shooter_State(void)
     gimbal.shooting_enabled = Check_Friction_Ready() &&
                               gimbal.shooter_pid[FRICTION_LEFT_MOTOR_INDEX].targetSpeed != 0;
 
+    // [修改点] 统一使用 custom_client_data 判定鼠标左键和右键
     if (gimbal.shooting_enabled && robot_state.control_mode == SHOOTING_MODE)
     {
-        if (RC_Ctl.rc.s1 == 1)
+        if (custom_client_data.left_button_down)
         {
-            if (RC_Ctl.mouse.left_key)
-            {
-                Set_Feeder_Speed(feeder_speed_target);
-            }
-            else if (RC_Ctl.mouse.right_key)
-            {
-                Set_Feeder_Speed(-feeder_speed_target * 0.1);
-            }
+            // 左键按下，正向拨弹射击
+            Set_Feeder_Speed(feeder_speed_target);
         }
-        else
+        else if (custom_client_data.right_button_down)
         {
-
-            Set_Feeder_Speed(RC_Ctl.rc.s2 == 3 ? feeder_speed_target : (-feeder_speed_target * 0.1));
+            // 右键按下，微弱反转防卡弹
+            Set_Feeder_Speed(-feeder_speed_target * 0.1f);
+        }
+        else 
+        {
+            // 无按键，停止拨弹
+            Set_Feeder_Speed(0);
         }
     }
     else

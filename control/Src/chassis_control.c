@@ -3,6 +3,7 @@
 #include "rc_control.h"
 #include "filter.h"
 #include "math.h"
+#include "custom_client.h" // [新增] 引入图传链路自定义客户端数据 [cite: 561-625]
 
 Chassis_t chassis;
 Chassis_Status_t chassis_status = CHASSIS_INIT;
@@ -102,18 +103,27 @@ void Handle_Chassis_Motors(void)
     /* 输入信号处理 */
     float target_x = 0.0f, target_y = 0.0f;
 
-    /* 模式切换 */
-    switch (RC_Ctl.rc.s1)
-    {
-    case 1: // 键盘模式
-        target_x = (RC_Ctl.keyboard.d - RC_Ctl.keyboard.a) * x_ramp.max_speed;
-        target_y = (RC_Ctl.keyboard.s - RC_Ctl.keyboard.w) * y_ramp.max_speed;
+    // [修改点] 提取 WASD 及功能键状态 [cite: 596-606]
+    uint8_t key_w = (custom_client_data.keyboard_value & (1 << 0)) ? 1 : 0;
+    uint8_t key_s = (custom_client_data.keyboard_value & (1 << 1)) ? 1 : 0;
+    uint8_t key_a = (custom_client_data.keyboard_value & (1 << 2)) ? 1 : 0;
+    uint8_t key_d = (custom_client_data.keyboard_value & (1 << 3)) ? 1 : 0;
+    uint8_t key_shift = (custom_client_data.keyboard_value & (1 << 4)) ? 1 : 0;
+    uint8_t key_ctrl  = (custom_client_data.keyboard_value & (1 << 5)) ? 1 : 0;
 
-        if (RC_Ctl.keyboard.shift)
+    /* 模式切换 */
+    // [修改点] 根据 rc_control.c 中判定的机器状态来控制，而非直接读取拨杆
+    switch (robot_state.control_mode)
+    {
+    case KB_CONTROL: // 键盘跟随模式
+        target_x = (key_d - key_a) * x_ramp.max_speed;
+        target_y = (key_s - key_w) * y_ramp.max_speed; // 保持原有坐标系映射逻辑
+
+        if (key_shift)
         {
             chassis.motion.speed.omega = Apply_Speed_Ramp(&gyro_ramp, 2500, dt);
         }
-        else if (RC_Ctl.keyboard.ctrl)
+        else if (key_ctrl)
         {
             chassis.motion.speed.omega = Apply_Speed_Ramp(&gyro_ramp, 4000, dt);
         }
@@ -123,21 +133,19 @@ void Handle_Chassis_Motors(void)
         }
         break;
 
-    case 2: // 云台跟随模式
-    {
-        target_x = RC_Ctl.rc.ch0 * x_ramp.max_speed;
-        target_y = -RC_Ctl.rc.ch1 * y_ramp.max_speed;
+    case SPIN_CONTROL: // 小陀螺模式
+        target_x = (key_d - key_a) * x_ramp.max_speed;
+        target_y = (key_s - key_w) * y_ramp.max_speed; // 保持原有坐标系映射逻辑
         
         // 设定小陀螺旋转速度，这里给 4000 (约中速)
         // 使用 Apply_Speed_Ramp 防止启动电流过大
         float spin_speed = 4000.0f; 
         chassis.motion.speed.omega = Apply_Speed_Ramp(&gyro_ramp, spin_speed, dt);
         break;
-    }
 
-    case 3: // 小陀螺模式
-        target_x = RC_Ctl.rc.ch0 * x_ramp.max_speed;
-        target_y = -RC_Ctl.rc.ch1 * y_ramp.max_speed;
+    case RC_CONTROL: // 如果以后还需要接入其他控制器，可以预留，此处暂按跟随处理
+        target_x = (key_d - key_a) * x_ramp.max_speed;
+        target_y = (key_s - key_w) * y_ramp.max_speed;
         chassis.motion.speed.omega = Apply_Speed_Ramp(&gyro_ramp, chassis.follow_target.angle_pid.output, dt);
         break;
 
